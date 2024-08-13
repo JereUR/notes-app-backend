@@ -19,7 +19,7 @@ app.use(express.json())
 
 const whitelist = [
   'http://localhost:3000',
-  'https://notes-app-frontend-phi.vercel.app/'
+  'https://notes-app-frontend-phi.vercel.app'
 ]
 
 const corsOptions: CorsOptions = {
