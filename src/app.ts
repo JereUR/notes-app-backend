@@ -17,6 +17,21 @@ app.use(morgan('dev'))
 
 app.use(express.json())
 
+app.use(
+  session({
+    secret: env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 60 * 60 * 1000
+    },
+    rolling: true,
+    store: MongoStore.create({
+      mongoUrl: env.MONGO_CONNECTION_STRING
+    })
+  })
+)
+
 const whitelist = [
   'http://localhost:3000',
   'https://notes-app-frontend-phi.vercel.app'
@@ -35,21 +50,6 @@ const corsOptions: CorsOptions = {
 }
 
 app.use(cors(corsOptions))
-
-app.use(
-  session({
-    secret: env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 60 * 60 * 1000
-    },
-    rolling: true,
-    store: MongoStore.create({
-      mongoUrl: env.MONGO_CONNECTION_STRING
-    })
-  })
-)
 
 app.use('/api/users', userRoutes)
 
