@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import express, { NextFunction, Request, Response } from 'express'
 import morgan from 'morgan'
+import cors, { CorsOptions } from 'cors'
 import createHttpError, { isHttpError } from 'http-errors'
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
@@ -15,6 +16,25 @@ const app = express()
 app.use(morgan('dev'))
 
 app.use(express.json())
+
+const whitelist = [
+  'http://localhost:3000',
+  'https://your-production-domain.com'
+]
+
+const corsOptions: CorsOptions = {
+  origin: (origin, callback) => {
+    if (whitelist.indexOf(origin as string) !== -1 || !origin) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'), false)
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true
+}
+
+app.use(cors(corsOptions))
 
 app.use(
   session({
